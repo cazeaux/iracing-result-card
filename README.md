@@ -2,6 +2,8 @@
 
 This card displays the recent race results provided by the iRacing integration.
 
+![example](example.png)
+
 ## iRacing integration
 
 [Iracing integration](https://github.com/cazeaux/ha-iracing)
