@@ -1,18 +1,25 @@
 class IracingResultCard extends HTMLElement {
   // Whenever the state changes, a new `hass` object is set. Use this to
   // update your content.
+  
   set hass(hass) {
-    // Initialize the content if it's not there yet.
+    // initialize configurable parameters
+    const conf_max = Number(this.config.max) > 0 ? Number(this.config.max) : 3;
+    const conf_title = this.config.title;
+    
     const entityId = this.config.entity;
     const state = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
     const json_results = hass.states[entityId].attributes.recent_results;
-    const displayed_results_max = Math.min(json_results.length, 3);
+    const displayed_results_max = Math.min(json_results.length, conf_max, 5);
     window.cardSize = displayed_results_max;
 
+    
+
+    // Initialize the content if it's not there yet.
     if (!this.content) {
       const card = document.createElement("ha-card");
-      card.header = state.state;
+      card.header = conf_title ? conf_title : stateStr ;
       this.content = document.createElement("div");
       this.content.style.padding = "5px 10px";
       card.appendChild(this.content);
