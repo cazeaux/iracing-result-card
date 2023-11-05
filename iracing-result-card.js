@@ -31,6 +31,19 @@ class IracingResultCard extends HTMLElement {
       const track = (key) => item('track')[key];
       console.log(item);
 
+      const options = {
+        weekday: "short",
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: false,
+      };
+      const race_date = new Intl.DateTimeFormat(navigator.language, options).format(new Date(item("session_start_time")));
+      
+
       const diff_ir = item("newi_rating") - item("oldi_rating");
       const diff_ir_prefix = (diff_ir >= 0 ? '+' : '')
       const diff_sr = (item("new_sub_level") - item("old_sub_level")) / 100;
@@ -47,7 +60,7 @@ class IracingResultCard extends HTMLElement {
 
       this.content.innerHTML += `
         <div class="container">
-          <div class="date">
+          <div class="serie">
             ${item("series_name")}
           </div>
           <div class="circuit">
@@ -62,6 +75,9 @@ class IracingResultCard extends HTMLElement {
             📈 <b>${item("newi_rating")}</b> (${diff_ir_prefix}${diff_ir})
             <br>
             🚧 <b>${new_sr}</b> (${diff_sr_prefix}${diff_sr}) ${item("incidents")}x
+          </div>
+          <div class="date">
+            ${race_date}
           </div>
         </div>          
         <br><br>
@@ -80,14 +96,22 @@ class IracingResultCard extends HTMLElement {
       gap: 0px 0px;
       grid-auto-flow: row;
       grid-template-areas:
-        "date date result"
-        "circuit circuit ir_sr";
+        "serie serie result"
+        "circuit circuit ir_sr"
+        "date date date";
+    }
+    
+    .serie {
+      grid-area: serie;
+      font-size: 16px;
+      font-weight: 400;
     }
     
     .date {
       grid-area: date;
-      font-size: 16px;
-      font-weight: 400;
+      font-size: 12px;
+      text-align: left;
+      padding-left: 20px;
     }
     
     .circuit {
