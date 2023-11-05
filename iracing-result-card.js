@@ -67,9 +67,9 @@ class IracingResultCard extends HTMLElement {
             ${track("track_name")}
           </div>
           <div class="result">
-            ${position_icon} P${item("finish_position")} (Q${item("start_position")})
+            ${position_icon} <b>P${item("finish_position")}</b> (Q${item("start_position")})
             <br>
-            🔸 SOF ${item("strength_of_field")}
+            🔸 SOF <b>${item("strength_of_field")}</b>
           </div>
           <div class="ir_sr">
             📈 <b>${item("newi_rating")}</b> (${diff_ir_prefix}${diff_ir})
