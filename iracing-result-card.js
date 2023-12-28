@@ -1,12 +1,12 @@
 class IracingResultCard extends HTMLElement {
   // Whenever the state changes, a new `hass` object is set. Use this to
   // update your content.
-  
+
   set hass(hass) {
     // initialize configurable parameters
     const conf_max = Number(this.config.max) > 0 ? Number(this.config.max) : 3;
     const conf_title = this.config.title;
-    
+
     const entityId = this.config.entity;
     const state = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
@@ -14,7 +14,7 @@ class IracingResultCard extends HTMLElement {
     const displayed_results_max = Math.min(json_results.length, conf_max, 5);
     window.cardSize = displayed_results_max;
 
-    
+
 
     // Initialize the content if it's not there yet.
     if (!this.content) {
@@ -49,7 +49,7 @@ class IracingResultCard extends HTMLElement {
         hour12: false,
       };
       const race_date = new Intl.DateTimeFormat(navigator.language, options).format(new Date(item("session_start_time")));
-      
+
 
       const diff_ir = item("newi_rating") - item("oldi_rating");
       const diff_ir_prefix = (diff_ir >= 0 ? '+' : '')
@@ -73,6 +73,9 @@ class IracingResultCard extends HTMLElement {
           <div class="circuit">
             ${track("track_name")}
           </div>
+          <div class="car">
+            ${item("car_name")}
+          </div>
           <div class="result">
             ${position_icon} <b>P${item("finish_position")}</b> (Q${item("start_position")})
             <br>
@@ -86,7 +89,7 @@ class IracingResultCard extends HTMLElement {
           <div class="date">
             ${race_date}
           </div>
-        </div>          
+        </div>
         <br><br>
       `;
 
@@ -99,38 +102,45 @@ class IracingResultCard extends HTMLElement {
       background-color: #F9F9F9;
       box-shadow: 1px 1px 2px rgba(0,0,0,.8);
       grid-template-columns: 1fr 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: auto;
       gap: 0px 0px;
       grid-auto-flow: row;
       grid-template-areas:
         "serie serie result"
         "circuit circuit ir_sr"
+        "car car ir_sr"
         "date date date";
     }
-    
+
     .serie {
       grid-area: serie;
       font-size: 16px;
       font-weight: 400;
     }
-    
+
     .date {
       grid-area: date;
       font-size: 12px;
       text-align: left;
       padding-left: 20px;
     }
-    
+
     .circuit {
       grid-area: circuit;
       font-size: 14px;
       font-weight: 600;
     }
-    
+
+    .car {
+      grid-area: car;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
     .result { grid-area: result; }
-    
+
     .ir_sr { grid-area: ir_sr; }
-    
+
     `;
     this.appendChild(style);
 
