@@ -1,3 +1,23 @@
+# Updated Iracing Result Card
+
+This update changes the following:
+
+Added:
+- Title uses drivers name if used as "Default", otherwise accepts empty string to hide
+- Events are colored depending on win, irating gain, irating loss
+- Event date/time has year, season and week added
+- Date/time can be clicked to get to session results
+
+Fixed:
+- removed static white background
+- prefixed classes to not interfere with global classes
+- changed grid layout to better use card space
+
+![example](example-1.png)
+
+![example2](example-2.png)
+
+
 # Iracing Result Card
 
 This card displays the recent race results provided by the iRacing integration.
