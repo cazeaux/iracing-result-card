@@ -17,6 +17,29 @@ Fixed:
 
 ![example2](example-2.png)
 
+## How to use
+
+`max` controls how many results are displayed. The absolute maximum is 5. Optional, default is 5.
+`title` controls the displayed title. Optional, "Default" is the driver name.
+
+### With driver name as title
+
+```yaml
+type: custom:iracing-result-card
+entity: sensor.DRIVER_NAME_driver
+max: 4
+title: "Default"
+```
+
+### Hide title and show only event cards
+
+```yaml
+type: custom:iracing-result-card
+entity: sensor.DRIVER_NAME_driver
+max: 4
+title: ""
+```
+
 
 # Iracing Result Card
 
@@ -49,16 +72,3 @@ Add the custom resource by following these steps:
 ![Alt text](add-resource.png)
 
 Use the URL : `/local/iracing/iracing-result-card.js`
-
-## How to use
-
-```yaml
-type: custom:iracing-result-card
-entity: sensor.DRIVER_NAME_driver
-max: 4
-title: My Customer Driver Name
-```
-
-`max` controls how many results are displayed. The absolute maximum is 5. Optional, default is 5.
-
-`title` controls the displayed title. Optional, default is the driver name.
