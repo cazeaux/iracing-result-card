@@ -14,6 +14,8 @@ class IracingResultCard extends HTMLElement {
     const displayed_results_max = Math.min(json_results.length, conf_max);
     window.cardSize = displayed_results_max;
 
+
+
     // Initialize the content if it's not there yet.
     if (!this.content) {
       const card = document.createElement("ha-card");
@@ -138,7 +140,7 @@ class IracingResultCard extends HTMLElement {
     }
     
     .ir-container.negative-ir {
-      border-right: 10px solid #ec2029n;
+      border-right: 10px solid #d7564f;
       background-color: rgba(236, 32, 41, .05);
     }
 
