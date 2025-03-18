@@ -17,6 +17,8 @@ Fixed:
 
 ![example2](example-2.png)
 
+![example3](example-4.png)
+
 ## How to use
 
 `max` controls how many results are displayed. The absolute maximum is 5. Optional, default is 5.
