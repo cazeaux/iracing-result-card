@@ -17,7 +17,7 @@ Fixed:
 
 ![example2](example-2.png)
 
-![example3](example-4.png)
+![example3](example-3.png)
 
 ## How to use
 
