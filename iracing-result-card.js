@@ -11,21 +11,18 @@ class IracingResultCard extends HTMLElement {
     const state = hass.states[entityId];
     const stateStr = state ? state.state : "unavailable";
     const json_results = hass.states[entityId].attributes.recent_results;
-    const displayed_results_max = Math.min(json_results.length, conf_max, 5);
+    const displayed_results_max = Math.min(json_results.length, conf_max);
     window.cardSize = displayed_results_max;
-
-
 
     // Initialize the content if it's not there yet.
     if (!this.content) {
       const card = document.createElement("ha-card");
-      card.header = conf_title ? conf_title : stateStr ;
+      card.header = conf_title != "Default" ? conf_title : stateStr;
       this.content = document.createElement("div");
       this.content.style.padding = "5px 10px";
       card.appendChild(this.content);
       this.appendChild(card);
     }
-
 
     if (!json_results || !json_results.length) {
       return;
@@ -52,11 +49,12 @@ class IracingResultCard extends HTMLElement {
 
 
       const diff_ir = item("newi_rating") - item("oldi_rating");
-      const diff_ir_prefix = (diff_ir >= 0 ? '+' : '')
+      const diff_ir_prefix = (diff_ir >= 0 ? '+' : '');
       const diff_sr = (item("new_sub_level") - item("old_sub_level")) / 100;
-      const diff_sr_prefix = (diff_sr >= 0 ? '+' : '')
+      const diff_sr_prefix = (diff_sr >= 0 ? '+' : '');
       const new_sr = (item("new_sub_level")) / 100;
       let position_icon = '🏁';
+      var state_class = "zero-ir";
       if (item("finish_position") == 1) {
         position_icon = '🥇';
       } else if (item("finish_position") == 2) {
@@ -65,81 +63,113 @@ class IracingResultCard extends HTMLElement {
         position_icon = '🥉';
       }
 
+      if(diff_ir_prefix == "+"){
+          var state_class = "positive-ir";
+      }
+      
+      if(diff_ir_prefix != "+"){
+          var state_class = "negative-ir";
+      }
+
       this.content.innerHTML += `
-        <div class="container">
-          <div class="serie">
+        <div class="ir-container ${state_class} finish-${item("finish_position")}">
+          <div class="ir-serie">
             ${item("series_name")}
           </div>
-          <div class="circuit">
+          <div class="ir-circuit">
             ${track("track_name")}
           </div>
-          <div class="car">
+          <div class="ir-car">
             ${item("car_name")}
           </div>
-          <div class="result">
+          <div class="ir-result">
             ${position_icon} <b>P${item("finish_position")}</b> (Q${item("start_position")})
             <br>
             🔸 SOF <b>${item("strength_of_field")}</b>
           </div>
-          <div class="ir_sr">
+          <div class="ir-ir_sr">
             📈 <b>${item("newi_rating")}</b> (${diff_ir_prefix}${diff_ir})
             <br>
             🚧 <b>${new_sr}</b> (${diff_sr_prefix}${diff_sr}) ${item("incidents")}x
           </div>
-          <div class="date">
-            ${race_date}
+          <div class="ir-date">
+            <a target="_blank" href="https://members-ng.iracing.com/web/racing/home/dashboard?subsessionid=${item("subsession_id")}">${race_date} (${item("season_year")} S${item("season_quarter")} W${item("race_week_num")})</a>
           </div>
         </div>
-        <br><br>
       `;
 
     }
 
     style.textContent = `
-    .container {
+    
+    .ir-container {
       display: grid;
-      padding: 3px;
-      background-color: #F9F9F9;
-      box-shadow: 1px 1px 2px rgba(0,0,0,.8);
+      padding: 10px;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: auto;
       gap: 0px 0px;
       grid-auto-flow: row;
+      border-radius:10px;
+      margin-top: 10px;
       grid-template-areas:
-        "serie serie result"
-        "circuit circuit ir_sr"
+        "serie serie result "
+        "circuit circuit result"
         "car car ir_sr"
-        "date date date";
+        "date date ir_sr";
+    }
+    
+    .ir-container a {
+        color:currentColor;
+        text-decoration: none;
+    }
+    
+    .ir-container:last-child {
+      margin-bottom: 5px;
+    }
+    
+    .ir-container.positive-ir {
+      border-right: 10px solid #85e066;
+      background-color: rgba(37,255,0,0.05);
+    }
+    
+    .ir-container.finish-1 {
+        border: 1px solid #ffb730;
+        border-right: 10px solid #ffb730;
+    }
+    
+    .ir-container.negative-ir {
+      border-right: 10px solid #ec2029n;
+      background-color: rgba(236, 32, 41, .05);
     }
 
-    .serie {
+    .ir-serie {
       grid-area: serie;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 400;
     }
 
-    .date {
+    .ir-date {
       grid-area: date;
-      font-size: 12px;
+      font-size: 10px;
       text-align: left;
-      padding-left: 20px;
+      //padding-left: 20px;
     }
 
-    .circuit {
+    .ir-circuit {
       grid-area: circuit;
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 600;
     }
 
-    .car {
+    .ir-car {
       grid-area: car;
       font-size: 12px;
       font-weight: 400;
     }
 
-    .result { grid-area: result; }
+    .ir-result { grid-area: result; }
 
-    .ir_sr { grid-area: ir_sr; }
+    .ir-ir_sr { grid-area: ir_sr; }
 
     `;
     this.appendChild(style);
@@ -164,4 +194,3 @@ class IracingResultCard extends HTMLElement {
 }
 
 customElements.define("iracing-result-card", IracingResultCard);
-
