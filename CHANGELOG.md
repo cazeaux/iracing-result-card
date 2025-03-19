@@ -5,7 +5,8 @@
 <a name="v1.2.0"></a>
 added:
 - Title uses drivers name if value string is "Default", otherwise accepts empty string to hide
-- Events are colored depending on win, irating gain, irating loss
+- Events are colored depending on win, irating gain, irating loss and color can be customized
+- Font sizes of series title (size L), date (size S) and car/track (size M) can be customized
 - Event date/time has year, season and week added
 - Date/time can be clicked to get to session results
 
