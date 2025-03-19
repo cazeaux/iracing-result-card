@@ -1,48 +1,3 @@
-# Updated Iracing Result Card
-
-This update changes the following:
-
-Added:
-- Title uses drivers name if used as "Default", otherwise accepts empty string to hide
-- Events are colored depending on win, irating gain, irating loss
-- Event date/time has year, season and week added
-- Date/time can be clicked to get to session results
-
-Fixed:
-- removed static white background
-- prefixed classes to not interfere with global classes
-- changed grid layout to better use card space
-
-![example](example-1.png)
-
-![example2](example-2.png)
-
-![example3](example-3.png)
-
-## How to use
-
-`max` controls how many results are displayed. The absolute maximum is 5. Optional, default is 5.
-`title` controls the displayed title. Optional, "Default" is the driver name.
-
-### With driver name as title
-
-```yaml
-type: custom:iracing-result-card
-entity: sensor.DRIVER_NAME_driver
-max: 4
-title: "Default"
-```
-
-### Hide title and show only event cards
-
-```yaml
-type: custom:iracing-result-card
-entity: sensor.DRIVER_NAME_driver
-max: 4
-title: ""
-```
-
-
 # Iracing Result Card
 
 This card displays the recent race results provided by the iRacing integration.
@@ -74,3 +29,16 @@ Add the custom resource by following these steps:
 ![Alt text](add-resource.png)
 
 Use the URL : `/local/iracing/iracing-result-card.js`
+
+## How to use
+
+```yaml
+type: custom:iracing-result-card
+entity: sensor.DRIVER_NAME_driver
+max: 4
+title: My Customer Driver Name
+```
+
+`max` controls how many results are displayed. The absolute maximum is 5. Optional, default is 5.
+
+`title` controls the displayed title. Optional, default is the driver name.

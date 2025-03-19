@@ -6,6 +6,14 @@ class IracingResultCard extends HTMLElement {
     // initialize configurable parameters
     const conf_max = Number(this.config.max) > 0 ? Number(this.config.max) : 3;
     const conf_title = this.config.title;
+    const conf_font_size_l = this.config.font_size_l ? this.config.font_size_l : "14px";
+    const conf_font_size_m = this.config.font_size_m ? this.config.font_size_m : "12px";
+    const conf_font_size_s = this.config.font_size_s ? this.config.font_size_s : "10px";
+    const conf_positive_color = this.config.positive_color ? this.config.positive_color : "#85e066";
+    const conf_negative_color = this.config.negative_color ? this.config.negative_color : "#d7564f";
+    const conf_win_color = this.config.win_color ? this.config.win_color : "#ffb730";
+    const conf_second_color = this.config.second_color ? this.config.second_color : "";
+    const conf_third_color = this.config.third_color ? this.config.third_color : "";
 
     const entityId = this.config.entity;
     const state = hass.states[entityId];
@@ -35,7 +43,7 @@ class IracingResultCard extends HTMLElement {
     for (let count = 0; count < displayed_results_max; count++) {
       const item = (key) => json_results[count][key];
       const track = (key) => item('track')[key];
-      console.log(item);
+      //console.log(item);
 
       const options = {
         weekday: "short",
@@ -56,7 +64,9 @@ class IracingResultCard extends HTMLElement {
       const diff_sr_prefix = (diff_sr >= 0 ? '+' : '');
       const new_sr = (item("new_sub_level")) / 100;
       let position_icon = '🏁';
-      var state_class = "zero-ir";
+      let state_class = "zero-ir";
+      let finish_class = "";
+      
       if (item("finish_position") == 1) {
         position_icon = '🥇';
       } else if (item("finish_position") == 2) {
@@ -65,16 +75,27 @@ class IracingResultCard extends HTMLElement {
         position_icon = '🥉';
       }
 
-      if(diff_ir_prefix == "+"){
-          var state_class = "positive-ir";
+      if(diff_ir_prefix == "+" && conf_positive_color != ""){
+          state_class = "positive-ir";
       }
       
-      if(diff_ir_prefix != "+"){
-          var state_class = "negative-ir";
+      if(diff_ir_prefix != "+" && conf_negative_color != ""){
+          state_class = "negative-ir";
+      }
+      
+      if( conf_win_color != "" && item("finish_position") == 1){
+          finish_class = "finish-1";
+      }
+      if( conf_second_color != "" && item("finish_position") == 2){
+          finish_class = "finish-2";
+      }
+      
+      if( conf_third_color != "" && item("finish_position") == 3){
+          finish_class = "finish-3";
       }
 
       this.content.innerHTML += `
-        <div class="ir-container ${state_class} finish-${item("finish_position")}">
+        <div class="ir-container ${state_class} ${finish_class}">
           <div class="ir-serie">
             ${item("series_name")}
           </div>
@@ -130,42 +151,51 @@ class IracingResultCard extends HTMLElement {
     }
     
     .ir-container.positive-ir {
-      border-right: 10px solid #85e066;
-      background-color: rgba(37,255,0,0.05);
+      border-right: 10px solid ${conf_positive_color};
+      background-color: ${this.hexToRgbA(conf_positive_color,".05")};
+    }
+    
+    .ir-container.finish-2 {
+        border: 1px solid ${conf_second_color};
+        border-right: 10px solid ${conf_second_color};
+    }
+    
+    .ir-container.finish-3 {
+        border: 1px solid ${conf_third_color};
+        border-right: 10px solid ${conf_third_color};
     }
     
     .ir-container.finish-1 {
-        border: 1px solid #ffb730;
-        border-right: 10px solid #ffb730;
+        border: 1px solid ${conf_win_color};
+        border-right: 10px solid ${conf_win_color};
     }
     
     .ir-container.negative-ir {
-      border-right: 10px solid #d7564f;
-      background-color: rgba(236, 32, 41, .05);
+      border-right: 10px solid ${conf_negative_color};
+      background-color: ${this.hexToRgbA(conf_negative_color,".05")};
     }
 
     .ir-serie {
       grid-area: serie;
-      font-size: 14px;
+      font-size: ${conf_font_size_l};
       font-weight: 400;
     }
 
     .ir-date {
       grid-area: date;
-      font-size: 10px;
+      font-size: ${conf_font_size_s};
       text-align: left;
-      //padding-left: 20px;
     }
 
     .ir-circuit {
       grid-area: circuit;
-      font-size: 12px;
+      font-size: ${conf_font_size_m};
       font-weight: 600;
     }
 
     .ir-car {
       grid-area: car;
-      font-size: 12px;
+      font-size: ${conf_font_size_m};
       font-weight: 400;
     }
 
@@ -174,6 +204,8 @@ class IracingResultCard extends HTMLElement {
     .ir-ir_sr { grid-area: ir_sr; }
 
     `;
+    
+     console.log(style);
     this.appendChild(style);
 
   }
@@ -193,6 +225,19 @@ class IracingResultCard extends HTMLElement {
   getCardSize() {
     return window.cardSize;
   }
+
+  hexToRgbA(hex,opacity=1){
+    var c;
+    if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
+        c= hex.substring(1).split('');
+        if(c.length== 3){
+            c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+        }
+        c= '0x'+c.join('');
+        return 'rgba('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+','+opacity+')';
+    }
+    throw new Error('Bad Hex');
+}
 }
 
 customElements.define("iracing-result-card", IracingResultCard);
